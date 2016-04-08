@@ -1,0 +1,54 @@
+#include <cstdlib>
+
+  int x=0;
+  int y=0;
+  int gameOver=0;
+
+void landGen();
+void draw();
+void logic();
+int main()
+{
+    while(gameOver==0)
+    {
+        draw();
+        return 0;
+    }
+}
+
+void landGen()
+{
+    int genNum=0;
+    genNum= rand() % 100;
+    
+    if(genNum<50)
+        cout<<"_";
+    else if(genNum<80)
+        cout<<"f";
+    else if(genNum<99)
+        cout<<"m";
+    else
+        cout<<"C";
+}
+
+void draw()
+{
+  
+    
+    for(int i=0; i<30; i++)
+    {
+        x++;
+        y=0;
+        for(int j=0; j<30; j++)
+        {
+            y++;
+            if(x==1||x==30||y==1||y==30)
+                cout<<"x";
+            else if(x==15&&y==15)
+                cout<<"A";
+            else
+                landGen();
+        }
+        cout<<endl;
+    }
+}
