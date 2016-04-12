@@ -1,16 +1,24 @@
+
+// Example program
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <ctime>
+#include <stdlib.h>
+
 using namespace std;
 
 char terChar[40][30];
 
 char mapGen();
 void printMap();
-
+char choice();
+void movement(char d);
+void reprint();
 
 int main()
 {
+    char dire=' ';
     int y=-1;
     for(int i=0;i<30;i++)
     { y++;
@@ -20,6 +28,9 @@ int main()
          }
     }
 printMap();
+dire=choice();
+movement(dire);
+
 return 0;
 }
 
@@ -40,6 +51,7 @@ return 'C';
     
 void printMap()
 {
+    
     int y=-1;
     for(int i=0;i<30;i++)
     { y++;
@@ -55,3 +67,29 @@ void printMap()
          cout<<endl;
     }
 }
+
+char choice()
+{
+    char l;
+    cout<<endl<<endl<<" use 'wasd' to move:  ";
+    cin>>l;
+    return l;
+    }
+    
+void movement(char d)
+{
+   if(d=='w')
+    {
+        int y=-1;
+    for(int i=0;i<30;i++)
+    { y++;
+    for(int x=0;x<40;x++)
+        {
+            terChar[x][y]=terchar[x][y-1];
+         }
+    }
+        
+    }
+    
+}
+    
