@@ -1,5 +1,4 @@
 
-// Example program
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -7,14 +6,20 @@
 #include <stdlib.h>
 
 using namespace std;
-
+bool gameState=true;
 char terChar[40][30];
+int fur=0;
+int food=0;
+int energy=0;
+int score= 0;
 
+void stats(int fur, int food, int energy, int score);
 char mapGen();
 void printMap();
 char choice();
 void movement(char d);
 void reprint();
+void enviorment(char);
 
 int main()
 {
@@ -27,9 +32,18 @@ int main()
             terChar[x][y]=mapGen();
          }
     }
+stats(int fur, int food, int energy, int score);
 printMap();
+
+do
+{
 dire=choice();
 movement(dire);
+cout<<endl<<endl<<endl<<endl<<endl;
+enviorment(dire);
+stats(fur,food,energy,score);
+printMap();
+}while(gameState=true);
 
 return 0;
 }
@@ -58,11 +72,11 @@ void printMap()
     for(int x=0;x<40;x++)
         {
             if(x==0||x==39||y==0||y==29)
-            cout<<"X";
+                cout<<"X";
             else if(x==20&&y==15)
-            cout<<"A";
+                cout<<"A";
             else
-            cout<<terChar[x][y];
+                cout<<terChar[x][y];
          }
          cout<<endl;
     }
@@ -80,16 +94,62 @@ void movement(char d)
 {
    if(d=='w')
     {
-        int y=-1;
+    int y=-1;
     for(int i=0;i<30;i++)
-    { y++;
-    for(int x=0;x<40;x++)
-        {
-            terChar[x][y]=terchar[x][y-1];
-         }
-    }
+        { y++;
+        for(int x=0;x<40;x++)
+            {
+                terChar[39-x][29-y]=terChar[39-x][28-y];
+            }
+        }
         
     }
-    
+    else if(d=='s')
+      {
+        int y=-1;
+         for(int i=0;i<30;i++)
+            { y++;
+            for(int x=0;x<40;x++)
+                {
+                    terChar[x][y]=terChar[x][y+1];
+                }
+        }
+      }
+    else if(d=='d')
+        {
+        int y=-1;
+        for(int i=0;i<30;i++)
+            { y++;
+            for(int x=0;x<40;x++)
+                {
+                terChar[x][y]=terChar[x+1][y];
+                }
+            }
+        }
+    else
+        { 
+        int y=-1;
+        for(int i=0;i<30;i++)
+            { y++;
+            for(int x=0;x<40;x++)
+                {
+                terChar[x][y]=terChar[38-x][29-y];
+                }
+            }
+        }
 }
+    
+void enviorment(char)
+{
+    if (terChar[20][15]=='C')
+        {
+        score++;
+        
+        }
+    else if
+    else if
+    }
+
+void stats(int fur, int food, int energy, int score)
+{}
     
