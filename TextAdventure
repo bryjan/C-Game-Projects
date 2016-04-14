@@ -37,6 +37,7 @@ do
 { dire=choice(); 
 movement(dire); 
 cout<<endl<<endl<<endl<<endl<<endl; 
+if(dire=='w'||dire=='a'||dire=='s'||dire=='d')
 enviorment(dire); 
 stats(fur,food,energy,score); 
 printMap(); 
@@ -138,13 +139,14 @@ else
 {
 if(terChar[20][15]=='f') 
 { 
-energy-=3; 
+energy-=2; 
 food+= rand()*energy % 4 +1; 
 fur+=rand()*food % 3; 
 } 
 else if(terChar[20][15]=='_') 
 { 
-energy+=rand()*food % 3+1; food-=1;
+energy+=rand()*food % 5+1; 
+food-=1;
 } 
 } 
 } 
@@ -152,7 +154,10 @@ energy+=rand()*food % 3+1; food-=1;
 void enviorment(char) 
 { 
 if (terChar[20][15]=='C')
-{ score++; energy =15; food+=fur;
+{
+score++;
+energy =15;
+food+=fur;
 fur=0;
 } 
 else if(terChar[20][15]=='_') 
@@ -163,7 +168,7 @@ food-=1;
 else if(terChar[20][15]=='f') 
 { 
 energy-=2; 
-food+= rand()*energy % 2 -1; 
+food+= rand()*energy % 3 -1; 
 }
 else 
 {
