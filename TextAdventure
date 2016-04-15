@@ -113,9 +113,9 @@ char mapGen()
 {
 	int genNum = 0;
 	genNum = 0 + rand() % (100-0+1);
-	if (genNum<30)
+	if (genNum<20)
 		return '_';
-	else if (genNum<60)
+	else if (genNum<45)
 		return 'f';
 	else if (genNum<99)
 		return 'm';
@@ -360,7 +360,7 @@ char iMapGen(int fGen, int pGen, int mGen,int seed)
 void lvlup(int &eCap,int &fCap,int &hSkill,int &cSkill, int score, int &lvl, int &n)
 {
 	char lvlChoice=' ';
-	if (score==2||score==4||score==6||score==8||score==10||score==12||score==14||score==16||score==18||score==20||score<=n)
+	if (score==2||score==4||score==6||score==8||score==10||score==12||score==14||score==16||score==18||score==20||score>=n)
 		if(terChar[w/2][h/2]='C')
 	{
 		cout<<"Carry weight: "<<fCap<<"  Max energy: "<<eCap<<"  Hunting skill: "<<hSkill+1<<"  Camp efficientcy: "<< cSkill+1<<endl<<endl;
