@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -6,113 +7,114 @@
 #include <windows.h>
 using namespace std;
 bool gameState = true;
-int const h=30;//  even numbers only
-int const w=60; // ^^^^^^^^^^^^^^^^^
+int const h = 30;//  even numbers only
+int const w = 60; // ^^^^^^^^^^^^^^^^^
 char terChar[w][h];
 int fur = 1;
 int food = 15;
 int energy = 15;
 int score = 1;
-int pScore=1;
-int fGen=0;
-int pGen=0;
-int mGen=0;  
-int seed=0;
-int yes=1;
-int eCap=15;
-int fCap=20;
-int hSkill=1;
-int cSkill=1;
-int lvl=1;
-int n=-3;
-int hscore=1;
+int pScore = 1;
+int fGen = 0;
+int pGen = 0;
+int mGen = 0;
+int seed = 0;
+int yes = 1;
+int eCap = 15;
+int fCap = 20;
+int hSkill = 1;
+int cSkill = 1;
+int lvl = 1;
+int n = -3;
+int hscore = 1;
 
 char dire = ' ';
 
-void lvlup(int &eCap,int &fCap,int &hSkill,int &cSkill, int score, int &lvl, int &n);
-void stats(int fur, int food, int energy, int score,int eCap,int fCap,int hSkill,int cSkill,int lvl,int hscore);
+void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, int &n);
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore);
 char mapGen(int const h, int const w);
-void printMap(int k,HANDLE  hConsole,int const h, int const w);
+void printMap(int k, HANDLE  hConsole, int const h, int const w);
 char choice();
-void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int cSkill,int &fur, int &food, int &energy);
-void enviroment(char, const int h, const int w,int eCap,int fCap,int hSkill,int cSkill,int &fur, int &food, int &energy, int &pScore);
+void movement(char d, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy);
+void enviroment(char, const int h, const int w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy, int &pScore);
 void difficulty(int &fGen, int &pGen, int &mGen);
-char iMapGen(int fGen, int pGen, int mGen,int seed);
+char iMapGen(int fGen, int pGen, int mGen, int seed);
 int main()
 {
 	HANDLE  hConsole;
 	int k;
-	k=12;
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	k = 12;
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);//for color(dont really understand it)
 	do
 	{
-	
-	fur = 1;
-	food = 15;
-	energy = 15;
-	score = 1;
-	pScore=1;
-	fGen=0;
-	pGen=0;
-	mGen=0;  
-	seed=0;
-	yes=1;
-	eCap=15;
-	fCap=20;
-	hSkill=1;
-	cSkill=1;
-	lvl=1;
-	n=-3;
 
-	cout<<"										 THE TRAVELLER"<<endl;
-	cout<<"	Travel from city to city managing your food and energy. Run out of either and you die. Rest in "<<endl;
-	cout<<"the plains(_) and hunt in the forest(f). Avoid mountains(m) if you can, they will drain you of resources."<<endl;
-	cout<<"You can trade your furs in for food in every new city. Good luck!"<<endl<<endl;
-	cout<<"Enter seed #:  ";
-	cin>>seed;
-	cout<<endl;
+		fur = 1;
+		food = 15;
+		energy = 15;
+		score = 1;
+		pScore = 1;
+		fGen = 0;
+		pGen = 0;
+		mGen = 0;
+		seed = 0;
+		yes = 1;
+		eCap = 15;
+		fCap = 20;
+		hSkill = 1;
+		cSkill = 1;
+		lvl = 1;//if any of the stats are set to 0 they become random junk randomly in runtime.
+		n = -3;//to space out leveling after level 10
 
-	difficulty(fGen,pGen,mGen);
-	int y = -1;
-	for (int i = 0; i<h; i++)
-	{
-		y++;
-		for (int x = 0; x<w; x++)
+		cout << "				 THE TRAVELLER" << endl;
+		cout << "	Travel from city to city managing your food and energy. Run out of either and you die."<<endl;
+		cout << " Rest in the plains(_) and hunt in the forest(f). Avoid mountains(m) if you can, they will drain" << endl;
+		cout << " you of resources. You can trade your furs in for food in every new city. Good luck!" << endl << endl;
+		cout << " Enter seed #:  "; //intro
+		cin >> seed;//seed for map gen
+		cout << endl;
+
+		difficulty(fGen, pGen, mGen);//asks for difficulty and changes map gen accordingly
+		system("cls");//clears screen
+		int y = -1;
+		for (int i = 0; i<h; i++)
 		{
-			terChar[x][y] = iMapGen(fGen,pGen,mGen,seed);
+			y++;
+			for (int x = 0; x<w; x++)
+			{
+				terChar[x][y] = iMapGen(fGen, pGen, mGen, seed);
+			}//assigns each element a char.
 		}
-	}
-	do
-	{
-		if(pScore<score)
+		do
 		{
-		pScore=score;
-		lvlup(eCap,fCap,hSkill,cSkill, score, lvl,n);
-		}
-		stats(fur, food, energy, score,eCap,fCap,hSkill,cSkill,lvl,hscore);
-		printMap(k,hConsole,h,w);
-		dire = choice();
-		movement(dire,h,w,eCap,fCap,hSkill,cSkill,fur, food,energy);
-		if (dire == 'w' || dire == 'a' || dire == 's' || dire == 'd')
-		enviroment(dire,h,w,eCap,fCap,hSkill,cSkill,fur, food, energy, pScore);
-		system ( "cls" );
-		
-	} while (food >= 0 && energy >= 0);
-	stats(fur, food, energy, score,eCap,fCap,hSkill,cSkill,lvl,hscore);
-	if(score>hscore)
-	hscore=score;
-	cout <<endl<<endl<< "You died" << endl;
-	cout<<"play again? 1 for yes:  ";
-	cin>>yes;
+			if (pScore<score)//to see if your score increased, and then check to see if you leveled up, and then level up
+			{
+				pScore = score;
+				lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n);
+			}
+			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints stats
+			printMap(k, hConsole, h, w);//prints map
+			dire = choice();//asks for choice
+			movement(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy);//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
+			if (dire == 'w' || dire == 'a' || dire == 's' || dire == 'd')//if you did move
+				enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, pScore);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
+			system("cls");//clears screen adds percieved movement
 
-	}while (yes==1);
+		} while (food >= 0 && energy >= 0); //if not dead, loop(loop is life)
+		stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints ending stats
+		if (score>hscore)
+			hscore = score;//adds highscore
+		cout << endl << endl << "You died" << endl;
+		cout << "play again? 1 for yes:  ";
+		cin >> yes;
+
+	} while (yes == 1);//asks for replay
 	return 0;
 }
 
 char mapGen()
 {
 	int genNum = 0;
-	genNum = 0 + rand() % (100-0+1);
+	genNum = 0 + rand() % (100 - 0 + 1);
 	if (genNum<20)
 		return '_';
 	else if (genNum<45)
@@ -122,8 +124,8 @@ char mapGen()
 	else
 		return 'C';
 }
-
-void printMap(int k,HANDLE  hConsole,int const h, int const w)//prints characters stored in terChar except borders and center
+//generates hard map on edges
+void printMap(int k, HANDLE  hConsole, int const h, int const w)
 {
 	int y = -1;
 	for (int i = 0; i<h; i++)
@@ -131,57 +133,57 @@ void printMap(int k,HANDLE  hConsole,int const h, int const w)//prints character
 		y++;
 		for (int x = 0; x<w; x++)
 		{
-			if (x == 0 || x == w-1 || y == 0 || y == h-1)
+			if (x == 0 || x == w - 1 || y == 0 || y == h - 1)
 			{
-				k=15;
+				k = 15;
 				SetConsoleTextAttribute(hConsole, k);//sets white
 				cout << "X";
 			}
-			else if (x == w/2 && y == h/2)
-				{
-				k=12;
-					SetConsoleTextAttribute(hConsole, k);//sets red
+			else if (x == w / 2 && y == h / 2)
+			{
+				k = 12;
+				SetConsoleTextAttribute(hConsole, k);//sets red
 				cout << "A";
-				}
+			}
 			else
-				if(terChar[x][y]=='_')
-				{
-					k=14;
-					SetConsoleTextAttribute(hConsole, k);//sets yellow
-					cout << terChar[x][y];
-				}
-				else if(terChar[x][y]=='f')
-				{
-					k=10;
-					SetConsoleTextAttribute(hConsole, k);//sets green
-					cout << terChar[x][y];
-				}
-				else if(terChar[x][y]=='m')
-				{
-					k=5;
-					SetConsoleTextAttribute(hConsole, k);//sets purple
-					cout << terChar[x][y];
-				}
-				else
-				{
-					k=11;
-					SetConsoleTextAttribute(hConsole, k);//sets blue
-					cout << terChar[x][y];
-				}
+			if (terChar[x][y] == '_')
+			{
+				k = 14;
+				SetConsoleTextAttribute(hConsole, k);//sets yellow
+				cout << terChar[x][y];
+			}
+			else if (terChar[x][y] == 'f')
+			{
+				k = 10;
+				SetConsoleTextAttribute(hConsole, k);//sets green
+				cout << terChar[x][y];
+			}
+			else if (terChar[x][y] == 'm')
+			{
+				k = 5;
+				SetConsoleTextAttribute(hConsole, k);//sets purple
+				cout << terChar[x][y];
+			}
+			else
+			{
+				k = 11;
+				SetConsoleTextAttribute(hConsole, k);//sets blue
+				cout << terChar[x][y];
+			}
 		}
 		cout << endl;
 	}
 }
-
-char choice()//key choicw
+//prints characters stored in terChar except borders and center
+char choice()
 {
 	char l;
 	cout << endl << endl << " use 'wasd' to move and any other key to wait/hunt: ";
 	cin >> l;
 	return l;
 }
-
-void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int cSkill,int &fur, int &food, int &energy)
+//key choice
+void movement(char d, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy)
 {
 	if (d == 'w')//moving up
 	{
@@ -191,7 +193,7 @@ void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int c
 			y++;
 			for (int x = 0; x<w; x++)
 			{
-				terChar[w-1 - x][h-1 - y] = terChar[w-1 - x][h-2 - y];
+				terChar[w - 1 - x][h - 1 - y] = terChar[w - 1 - x][h - 2 - y];
 			}
 		}
 		for (int x = 0; x<w; x++)
@@ -230,7 +232,7 @@ void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int c
 				terChar[w][i] = mapGen();//gens right border
 			}
 		}
-		
+
 	}
 	else if (d == 'a')//moving left
 	{
@@ -240,7 +242,7 @@ void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int c
 			y++;
 			for (int x = 0; x<w; x++)
 			{
-				terChar[w-1-x][h-1-y] = terChar[w-2 - x][h-1 - y];
+				terChar[w - 1 - x][h - 1 - y] = terChar[w - 2 - x][h - 1 - y];
 			}
 		}
 		for (int i = 0; i<h; i++)
@@ -250,62 +252,62 @@ void movement(char d,int const h, int const w,int eCap,int fCap,int hSkill,int c
 	}
 	else // if waits or hunts
 	{
-		if (terChar[w/2][h/2] == 'f')//hunting in forests
+		if (terChar[w / 2][h / 2] == 'f')//hunting in forests
 		{
 			energy -= 3;
-			if(food+fur<fCap)
-			food += 0 + (rand()% (4 -0 + 1))+hSkill-1;
-			fur += 0 + (rand()% (2 -0 + 1))+hSkill-1;
+			if (food + fur<fCap)
+				food += 0 + (rand() % (4 - 0 + 1)) + hSkill - 1;
+			fur += 0 + (rand() % (2 - 0 + 1)) + hSkill - 1;
 		}
-		else if (terChar[w/2][h/2] == '_')//waiting in plains
+		else if (terChar[w / 2][h / 2] == '_')//waiting in plains
 		{
-			
-			if(energy<=eCap)
-			energy += (1 + rand()% (5 -1 + 1)+cSkill-1);
+
+			if (energy <= eCap)
+				energy += (1 + rand() % (5 - 1 + 1) + cSkill - 1);
 			food -= 2;
 
 		}
-		else if(terChar[w/2][h/2] == 'm')
+		else if (terChar[w / 2][h / 2] == 'm')
 		{
 			food -= 3;
-			if(fur+food<fCap)
-			fur+=(0 + rand()% (2 -0 + 1))+hSkill-1;//waiting & hunting in mountains
+			if (fur + food<fCap)
+				fur += (0 + rand() % (2 - 0 + 1)) + hSkill - 1;//waiting & hunting in mountains
 		}
 	}
 }
-
-void enviroment(char, int const h, int const w,int eCap,int fCap,int hSkill,int cSkill,int &fur, int &food, int &energy, int &pScore)
+//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
+void enviroment(char, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy, int &pScore)
 {
-	if (terChar[w/2][h/2] == 'C') //reaching a city
+	if (terChar[w / 2][h / 2] == 'C') //reaching a city
 	{
 		score++;
 		energy = eCap;
 		food += fur;
 		fur = 0;
-		terChar[w/2][h/2] = 'c';
+		terChar[w / 2][h / 2] = 'c';
 	}
-	else if (terChar[w/2][h/2] == '_')//moving into plains
+	else if (terChar[w / 2][h / 2] == '_')//moving into plains
 	{
 		energy -= 1;
 		food -= 1;
 	}
-	else if (terChar[w/2][h/2] == 'f')//moving into forest
+	else if (terChar[w / 2][h / 2] == 'f')//moving into forest
 	{
 		energy -= 2;
-		if(food+fur<fCap)
+		if (food + fur<fCap)
 		{
-			if(hSkill-1>=2)
+			if (hSkill - 1 >= 2)
 			{
-				if(hSkill-1%2!=0)
+				if (hSkill - 1 % 2 != 0)
 				{
-					hSkill-=1;
+					hSkill -= 1;
 				}
 			}
-			food+=(hSkill/2);
-			food += 0 + rand()% (2 - 0 + 1);
+			food += (hSkill / 2);
+			food += 0 + rand() % (2 - 0 + 1);
 		}
 	}
-	else if (terChar[w/2][h/2] == 'c')//moving into already visited city
+	else if (terChar[w / 2][h / 2] == 'c')//moving into already visited city
 	{
 	}
 	else// moving into mountains
@@ -314,39 +316,39 @@ void enviroment(char, int const h, int const w,int eCap,int fCap,int hSkill,int 
 		food -= 3;
 	}
 }
-
-void stats(int fur, int food, int energy, int score, int eCap,int fCap,int hSkill,int cSkill,int lvl, int hscore)
+//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore)
 {
-	if(hscore!=0)
-	cout<<"highscore: "<<hscore<<endl;
-	cout<<"Level: "<<lvl<<"  Carry weight: "<<fCap<<"  Max energy: "<<eCap<<"  Hunting skill: "<<hSkill<<"  Camp efficientcy: "<< cSkill<<endl<< endl;
+	if (hscore != 0)
+		cout <<endl<< "highscore: " << hscore << endl;
+	cout << "Level: " << lvl <<endl<< "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill << "  Camp efficientcy: " << cSkill << endl << endl;
 	cout << "fur: " << fur << " food: " << food << " energy: " << energy << endl;
 	cout << "score: " << score << endl;
 }
-
+//prints stats
 void difficulty(int &fGen, int &pGen, int &mGen)
 {
-	int dif=0;
-	cout<<"Choose difficulty: 1=easy 2=hard: ";
-	cin>>dif;
-	if(dif==2)
+	int dif = 0;
+	cout << "Choose difficulty: 1=easy 2=hard: ";
+	cin >> dif;
+	if (dif == 2)
 	{
-		fGen=45;
-		pGen=20;
-		mGen=98;
+		fGen = 45;
+		pGen = 20;
+		mGen = 98;
 	}
 	else
 	{
-		fGen=80;
-		pGen=50;
-		mGen=98;
+		fGen = 80;
+		pGen = 50;
+		mGen = 98;
 	}
 }
-
-char iMapGen(int fGen, int pGen, int mGen,int seed)
+//asks difficulty and changes map gen
+char iMapGen(int fGen, int pGen, int mGen, int seed)
 {
 	int genNum = 0;
-	genNum = 0 + rand()*seed % (100-0+1);
+	genNum = 0 + rand()*seed % (100 - 0 + 1);
 	if (genNum<pGen)
 		return '_';
 	else if (genNum<fGen)
@@ -355,32 +357,33 @@ char iMapGen(int fGen, int pGen, int mGen,int seed)
 		return 'm';
 	else
 		return 'C';
-}
-
-void lvlup(int &eCap,int &fCap,int &hSkill,int &cSkill, int score, int &lvl, int &n)
+}//initial map gen w/ seed and set difficulty
+//initial map gen w/ seed and difficulty
+void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, int &n)
 {
-	char lvlChoice=' ';
-	if (score==2||score==4||score==6||score==8||score==10||score==12||score==14||score==16||score==18||score==20||score>=n&&score>20)
-		if(terChar[w/2][h/2]='C')
+	char lvlChoice = ' ';
+	if (score == 2 || score == 4 || score == 6 || score == 8 || score == 10 || score == 12 || score == 14 || score == 16 || score == 18 || score == 20 || score >= n&&score>20)
+	if (terChar[w / 2][h / 2] = 'C')
 	{
-		cout<<"Carry weight: "<<fCap<<"  Max energy: "<<eCap<<"  Hunting skill: "<<hSkill+1<<"  Camp efficientcy: "<< cSkill+1<<endl<<endl;
-		
-		cout<<"You've grown wiser and stronger with each mile. How have you grown?"<<endl;
-		cout<<" 'I can carry more.' (c) "<<endl;
-		cout<<" 'I can walk futher in a day.' (e)"<<endl;
-		cout<<" 'I've became a better hunter and learned of new plants to eat.'  (h)"<<endl;
-		cout<<" 'I've learned to set up my camps quickly and efficiently, my camp is becoming home.'  (r)"<<endl;
-		cin>>lvlChoice;
-		if(lvlChoice=='c')
-			fCap+=3;
-		else if(lvlChoice=='e')
-			eCap+=3;
-		else if(lvlChoice=='h')
+		cout << "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill + 1 << "  Camp efficientcy: " << cSkill + 1 << endl << endl;
+
+		cout << "You've grown wiser and stronger with each mile. How have you grown?" << endl;
+		cout << " 'I can carry more.' (c) " << endl;
+		cout << " 'I can walk futher in a day.' (e)" << endl;
+		cout << " 'I've became a better hunter and learned of new plants to eat.'  (h)" << endl;
+		cout << " 'I've learned to set up my camps quickly and efficiently, my camp is becoming home.'  (r)" << endl;
+		cin >> lvlChoice;
+		if (lvlChoice == 'c')
+			fCap += 3;
+		else if (lvlChoice == 'e')
+			eCap += 3;
+		else if (lvlChoice == 'h')
 			hSkill++;
 		else
 			cSkill++;
 
 		lvl++;
-		n+=3;
+		n += 3;
 	}
 }
+//checks to see if you leveled up and prompts you for a choice
