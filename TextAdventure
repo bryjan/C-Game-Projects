@@ -32,7 +32,7 @@ int coins = 1;
 char dire = ' ';
 
 void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, int &n);
-void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore);
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore,int coins);
 char mapGen(int const h, int const w);
 void printMap(int k, HANDLE  hConsole, int const h, int const w);
 char choice();
@@ -89,19 +89,21 @@ int main()
 		}
 		do
 		{
+			system("cls");//clears screen adds percieved movement
 			if (pScore<score)//to see if your score increased, and then check to see if you leveled up, and then level up
 			{
 				pScore = score;
 				lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n);
+				system("cls");
 			}
-			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints stats
+			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore, coins);//prints stats
 			printMap(k, hConsole, h, w);//prints map
 			dire = choice();//asks for choice
 			movement(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy);//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
 			enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, pScore, coins);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
-			system("cls");//clears screen adds percieved movement
-
+			
 		} while (food >= 0 && energy >= 0); //if not dead, loop(loop is life)
+		system("cls");
 		stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints ending stats
 		if (score>hscore)
 			hscore = score;//adds highscore
@@ -262,9 +264,9 @@ void enviroment(char dire, int const h, int const w, int eCap, int fCap, int hSk
 		if (terChar[w / 2][h / 2] == 'C') //reaching a city
 		{
 			score++;
+			lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n);
 			energy = eCap;
 			exchange(coins,fur,food,fCap);
-			lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n)
 			terChar[w / 2][h / 2] = 'c';
 			
 		}
@@ -325,12 +327,12 @@ void enviroment(char dire, int const h, int const w, int eCap, int fCap, int hSk
 
 }
 //applies the affect of moving into a certain enviroment, processes what happens when you wait and sets a new city to an old city.
-void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore)
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore, int coins)
 {
 	if (hscore != 0)
 		cout << endl << "highscore: " << hscore << endl;
 	cout << "Level: " << lvl << endl << "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill << "  Camp efficientcy: " << cSkill << endl << endl;
-	cout << "fur: " << fur << " food: " << food << " energy: " << energy << endl;
+	cout << "fur: " << fur << " food: " << food << " energy: " << energy <<" coins: "<<coins<< endl;
 	cout << "score: " << score << endl;
 }
 //prints stats
