@@ -35,7 +35,7 @@ void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, 
 void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore,int coins);
 char mapGen(int const h, int const w);
 void printMap(int k, HANDLE  hConsole, int const h, int const w);
-char choice();
+char choice(int const h, int const w);
 void movement(char dire, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy);
 void enviroment(char dire, int const h, int const w, int &eCap, int &fCap, int &hSkill, int &cSkill, int &fur, int &food, int &energy, int &Score, int &coins, int &lvl, int &n);
 void difficulty(int &fGen, int &pGen, int &mGen);
@@ -92,7 +92,7 @@ int main()
 			system("cls");//clears screen adds percieved movement
 			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore, coins);//prints stats
 			printMap(k, hConsole, h, w);//prints map
-			dire = choice();//asks for choice
+			dire = choice(h,w);//asks for choice
 			movement(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy);//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
 			enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, score, coins, lvl, n);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
 			
@@ -173,9 +173,10 @@ void printMap(int k, HANDLE  hConsole, int const h, int const w)
 	}
 }
 //prints characters stored in terChar except borders and center
-char choice()
+char choice(int const h, int const w)
 {
 	char l;
+	cout<<"( "<<terChar[w / 2][h / 2]<<" )"<<endl;
 	cout << endl << endl << " use 'wasd' to move and any other key to wait/hunt: ";
 	cin >> l;
 	return l;
@@ -432,5 +433,6 @@ void exchange(int &coins, int &fur, int &food, int fCap)
 		coins -= p;
 		system("cls");
 	}
+	system("cls");
 }
 //furs exchange screen and choices
