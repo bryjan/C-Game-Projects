@@ -27,18 +27,21 @@ int cSkill = 1;
 int lvl = 1;
 int n = -3;
 int hscore = 1;
+int coins = 1;
 
 char dire = ' ';
 
 void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, int &n);
-void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore);
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore,int coins);
 char mapGen(int const h, int const w);
 void printMap(int k, HANDLE  hConsole, int const h, int const w);
 char choice();
 void movement(char dire, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy);
-void enviroment(char dire, const int h, const int w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy, int &pScore);
+void enviroment(char dire, int const h, int const w, int &eCap, int &fCap, int &hSkill, int &cSkill, int &fur, int &food, int &energy, int &Score, int &coins, int &lvl, int &n);
 void difficulty(int &fGen, int &pGen, int &mGen);
 char iMapGen(int fGen, int pGen, int mGen, int seed);
+void exchange(int &coins, int &fur, int &food, int fCap);
+
 int main()
 {
 	HANDLE  hConsole;
@@ -86,20 +89,16 @@ int main()
 		}
 		do
 		{
-			if (pScore<score)//to see if your score increased, and then check to see if you leveled up, and then level up
-			{
-				pScore = score;
-				lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n);
-			}
-			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints stats
+			system("cls");//clears screen adds percieved movement
+			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore, coins);//prints stats
 			printMap(k, hConsole, h, w);//prints map
 			dire = choice();//asks for choice
 			movement(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy);//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
-			enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, pScore);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
-			system("cls");//clears screen adds percieved movement
-
+			enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, score, coins, lvl, n);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
+			
 		} while (food >= 0 && energy >= 0); //if not dead, loop(loop is life)
-		stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore);//prints ending stats
+		system("cls");
+		stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore, coins);//prints ending stats
 		if (score>hscore)
 			hscore = score;//adds highscore
 		cout << endl << endl << "You died" << endl;
@@ -252,17 +251,18 @@ void movement(char d, int const h, int const w, int eCap, int fCap, int hSkill, 
 	}
 }
 //regenerates map edges, moves elements to proper adjacent subscripts, 
-void enviroment(char dire, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy, int &pScore)
+void enviroment(char dire, int const h, int const w, int &eCap, int &fCap, int &hSkill, int &cSkill, int &fur, int &food, int &energy, int &Score, int &coins, int &lvl, int &n)
 {
 	if (dire == 'w' || dire == 'a' || dire == 's' || dire == 'd')//if you did move
 	{
 		if (terChar[w / 2][h / 2] == 'C') //reaching a city
 		{
 			score++;
+			lvlup(eCap, fCap, hSkill, cSkill, score, lvl, n);
 			energy = eCap;
-			food += fur;
-			fur = 0;
+			exchange(coins,fur,food,fCap);
 			terChar[w / 2][h / 2] = 'c';
+			
 		}
 		else if (terChar[w / 2][h / 2] == '_')//moving into plains
 		{
@@ -321,12 +321,12 @@ void enviroment(char dire, int const h, int const w, int eCap, int fCap, int hSk
 
 }
 //applies the affect of moving into a certain enviroment, processes what happens when you wait and sets a new city to an old city.
-void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore)
+void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore, int coins)
 {
-	if (hscore != 0)
+	if (hscore != 1)
 		cout << endl << "highscore: " << hscore << endl;
 	cout << "Level: " << lvl << endl << "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill << "  Camp efficientcy: " << cSkill << endl << endl;
-	cout << "fur: " << fur << " food: " << food << " energy: " << energy << endl;
+	cout << "fur: " << fur << "   food: " << food << "   energy: " << energy <<"		coins: "<<coins<< endl;
 	cout << "score: " << score << endl;
 }
 //prints stats
@@ -369,7 +369,8 @@ void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, 
 	if (score == 2 || score == 4 || score == 6 || score == 8 || score == 10 || score == 12 || score == 14 || score == 16 || score == 18 || score == 20 || score >= n&&score>20)
 	if (terChar[w / 2][h / 2] == 'C')
 	{
-		cout << "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill + 1 << "  Camp efficientcy: " << cSkill + 1 << endl << endl;
+		system("cls");
+		cout << "Carry weight: " << fCap << "  Max energy: " << eCap << "  Hunting skill: " << hSkill << "  Camp efficientcy: " << cSkill << endl << endl;
 
 		cout << "You've grown wiser and stronger with each mile. How have you grown?" << endl;
 		cout << " 'I can carry more.' (c) " << endl;
@@ -388,5 +389,48 @@ void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, 
 
 		lvl++;
 		n += 3;
+		system("cls");
+	}
+
+}
+//lvl up screen and choice.
+void exchange(int &coins, int &fur, int &food, int fCap)
+{
+	system("cls");
+
+	int p=0;
+	char c=' ';
+	if (food > fCap)
+	{
+		cout << "You traded in " << food-fCap << " food for " << food-fCap << " coins." << endl;
+		coins += food - fCap;
+		food = fCap;
+		
+	}
+	if(fur>0)
+	{
+	cout << "You traded in " << fur << " furs for " << fur<< " coins." << endl;
+	coins += fur;
+	fur = 0;
+	}
+	if(coins>0)
+	{
+		cout<< "Max Carry Weight: " << fCap<<endl;
+		cout << "You have " << coins << " total coins & "<<food <<" portions of food."<< endl;
+		cout << "Buy food?(y or n): ";
+		cin >> c;
+	}
+	if (toupper(c) == 'Y')
+	{
+		do
+		{
+			cout << endl << "Coins: " << coins << " Food: " << food << " Max Carry Weight: " << fCap;
+			cout << endl << "How much? 1 coin for 1 portion: ";
+			cin >> p;
+		} while (p<0 || food+p>fCap);
+		food += p;
+		coins -= p;
+		system("cls");
 	}
 }
+//furs exchange screen and choices
