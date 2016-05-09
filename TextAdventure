@@ -1,10 +1,8 @@
-#include "stdafx.h"
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <ctime>
 #include <stdlib.h>
-#include <windows.h>
 using namespace std;
 bool gameState = true;
 int const h = 30;//  even numbers only
@@ -34,8 +32,8 @@ char dire = ' ';
 void lvlup(int &eCap, int &fCap, int &hSkill, int &cSkill, int score, int &lvl, int &n);
 void stats(int fur, int food, int energy, int score, int eCap, int fCap, int hSkill, int cSkill, int lvl, int hscore,int coins);
 char mapGen(int const h, int const w);
-void printMap(int k, HANDLE  hConsole, int const h, int const w);
-char choice();
+void printMap(int const h, int const w);
+char choice(int const h, int const w);
 void movement(char dire, int const h, int const w, int eCap, int fCap, int hSkill, int cSkill, int &fur, int &food, int &energy);
 void enviroment(char dire, int const h, int const w, int &eCap, int &fCap, int &hSkill, int &cSkill, int &fur, int &food, int &energy, int &Score, int &coins, int &lvl, int &n);
 void difficulty(int &fGen, int &pGen, int &mGen);
@@ -44,10 +42,6 @@ void exchange(int &coins, int &fur, int &food, int fCap);
 
 int main()
 {
-	HANDLE  hConsole;
-	int k;
-	k = 12;
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);//for color(dont really understand it)
 	do
 	{
 
@@ -91,8 +85,8 @@ int main()
 		{
 			system("cls");//clears screen adds percieved movement
 			stats(fur, food, energy, score, eCap, fCap, hSkill, cSkill, lvl, hscore, coins);//prints stats
-			printMap(k, hConsole, h, w);//prints map
-			dire = choice();//asks for choice
+			printMap(h, w);//prints map
+			dire = choice(h,w);//asks for choice
 			movement(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy);//regenerates map edges, moves elements to proper adjacent subscripts, process what happens when you wait
 			enviroment(dire, h, w, eCap, fCap, hSkill, cSkill, fur, food, energy, score, coins, lvl, n);//applies the affect of moving into a certain enviroment, and sets a new city to an old city.
 			
@@ -123,7 +117,7 @@ char mapGen()
 		return 'C';
 }
 //generates hard map on edges
-void printMap(int k, HANDLE  hConsole, int const h, int const w)
+void printMap(int const h, int const w)
 {
 	int y = -1;
 	for (int i = 0; i<h; i++)
@@ -133,39 +127,27 @@ void printMap(int k, HANDLE  hConsole, int const h, int const w)
 		{
 			if (x == 0 || x == w - 1 || y == 0 || y == h - 1)
 			{
-				k = 15;
-				SetConsoleTextAttribute(hConsole, k);//sets white
 				cout << "X";
 			}
 			else if (x == w / 2 && y == h / 2)
 			{
-				k = 12;
-				SetConsoleTextAttribute(hConsole, k);//sets red
 				cout << "A";
 			}
 			else
 			if (terChar[x][y] == '_')
 			{
-				k = 14;
-				SetConsoleTextAttribute(hConsole, k);//sets yellow
 				cout << terChar[x][y];
 			}
 			else if (terChar[x][y] == 'f')
 			{
-				k = 10;
-				SetConsoleTextAttribute(hConsole, k);//sets green
 				cout << terChar[x][y];
 			}
 			else if (terChar[x][y] == 'm')
 			{
-				k = 5;
-				SetConsoleTextAttribute(hConsole, k);//sets purple
 				cout << terChar[x][y];
 			}
 			else
 			{
-				k = 11;
-				SetConsoleTextAttribute(hConsole, k);//sets blue
 				cout << terChar[x][y];
 			}
 		}
@@ -173,9 +155,10 @@ void printMap(int k, HANDLE  hConsole, int const h, int const w)
 	}
 }
 //prints characters stored in terChar except borders and center
-char choice()
+char choice(int const h, int const w)
 {
 	char l;
+	cout<<"( "<<terChar[w / 2][h / 2]<<" )"<<endl;
 	cout << endl << endl << " use 'wasd' to move and any other key to wait/hunt: ";
 	cin >> l;
 	return l;
@@ -432,5 +415,7 @@ void exchange(int &coins, int &fur, int &food, int fCap)
 		coins -= p;
 		system("cls");
 	}
+	system("cls");
 }
 //furs exchange screen and choices
+
